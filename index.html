@@ -1,83 +1,194 @@
 <!DOCTYPE html>
+
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>На Антония</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(60deg, #e400fd, #0004ff);
-            font-family: Arial, sans-serif, italic;
-            color: #ffffff;
-            background-color: #0061fd;
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+</head>
+<style>
+    body{
+        background:black;
+        overflow:hidden;
+        margin:0;
+      }
+      canvas{
+        background:#000;
+        color: white;
+      }
+
+      .greeting {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-family: 'Ubuntu', sans-serif;
+        margin: auto;
+      }
+      .p {
+        padding: 100px;
+      }
+      .heading {
+        font-size: 1.5em;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+
+
+      }
+
+      .content {
+        font-size: 1em;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+
+
+      }
+</style>
+<body>
+    <script>
+        window.addEventListener("resize", resizeCanvas, false);
+        window.addEventListener("DOMContentLoaded", onLoad, false);
+
+        window.requestAnimationFrame =
+            window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      ||
+            window.msRequestAnimationFrame     ||
+            function (callback) {
+                window.setTimeout(callback, 1000/60);
+            };
+
+        var canvas, ctx, w, h, particles = [], probability = 0.04,
+            xPoint, yPoint;
+
+
+
+        function onLoad() {
+            canvas = document.getElementById("canvas");
+            ctx = canvas.getContext("2d");
+            resizeCanvas();
+
+            window.requestAnimationFrame(updateWorld);
         }
 
-        .container {
-            width: 80%;
-            height: 100%;
-            margin: 0 auto;
-            text-align: left;
-            padding-left: 20%;
+        function resizeCanvas() {
+            if (!!canvas) {
+                w = canvas.width = window.innerWidth;
+                h = canvas.height = window.innerHeight;
+            }
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <p>Още ли си тук?👀</p>
-        <br>
-        <h1>На Антония</h1>
-        <i>
-        <p>На неочаквано място,</p>
-        <p>в ден обикновен,</p>
-        <p>плъзнах надясно</p>
-        <p>и бях благословен.</p>
-        <p>Пратих ти DM,</p>
-        <p>че хлътнах - не отричам.</p>
-        <p>И така след година,</p>
-        <p>не спирам да те обичам!</p>
-        <br>
-        <p>Сякаш вятър отвя ме,</p>
-        <p>или вълна потопи ме,</p>
-        <p>летя и се вълнувам,</p>
-        <p>като чуя твоето име!</p>
-        <p>Ти ме правиш силен,</p>
-        <p>ти ме правиш мъж,</p>
-        <p>ти ме правиш стилен</p>
-        <p>и всичко - наведнъж.</p>
-        <p>Обичам сладко да се будя,</p>
-        <p>и сърцето ми да запява,</p>
-        <p>и отново да се влюбя,</p>
-        <p>в красотата ти, и нрава.</p>
-        <br>
-        <p>A когато съм в празната стая</p>
-        <p>и представям си те с мен и засмяна,</p>
-        <p>Въртя се в леглото.</p>
-        <p>Боли ме, защото</p>
-        <p>така съм когато те няма.</p>
-        <p>Без тебе сладкото горчи,</p>
-        <p>без тебе песента мълчи.</p>
-        <p>Без тебе всичко в мен крещи</p>
-        <p>„Боже, при нея ме води!“</p>
-        <p>Но колкото и мъчно да става,</p>
-        <p>дълбоко аз в себе си зная,</p>
-        <p>че любовта ни е достатъчно здрава</p>
-        <p>и оставам да трая до края.</p>
-        <br>
-        <p>Любовта ни е като градина,</p>
-        <p>поливаш, и никнат красиви цветя.</p>
-        <p>Тя е като птиците, свободни да летят,</p>
-        <p>но свързани с родната земя.</p>
-        <p>Тя е моята мечта,</p>
-        <p>в която се заричам.</p>
-        <p>Oт Холандия ли да спра,</p>
-        <p>като и от други свят ще те обичам?</p>
-        <br>
-        <br>
-        <br>
-        <br>
-        </i>
+
+        function updateWorld() {
+            update();
+            paint();
+            window.requestAnimationFrame(updateWorld);
+        }
+
+        function update() {
+            if (particles.length < 500 && Math.random() < probability) {
+                createFirework();
+            }
+            var alive = [];
+            for (var i=0; i<particles.length; i++) {
+                if (particles[i].move()) {
+                    alive.push(particles[i]);
+                }
+            }
+            particles = alive;
+        }
+
+        function paint() {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.fillRect(0, 0, w, h);
+            ctx.globalCompositeOperation = 'lighter';
+            for (var i=0; i<particles.length; i++) {
+                particles[i].draw(ctx);
+            }
+        }
+
+        function createFirework() {
+            xPoint = Math.random()*(w-200)+100;
+            yPoint = Math.random()*(h-200)+100;
+            var nFire = Math.random()*50+100;
+            var c = "rgb("+(~~(Math.random()*200+55))+","
+                 +(~~(Math.random()*200+55))+","+(~~(Math.random()*200+55))+")";
+            for (var i=0; i<nFire; i++) {
+                var particle = new Particle();
+                particle.color = c;
+                var vy = Math.sqrt(25-particle.vx*particle.vx);
+                if (Math.abs(particle.vy) > vy) {
+                    particle.vy = particle.vy>0 ? vy: -vy;
+                }
+                particles.push(particle);
+            }
+        }
+
+        function Particle() {
+            this.w = this.h = Math.random()*4+1;
+
+            this.x = xPoint-this.w/2;
+            this.y = yPoint-this.h/2;
+
+            this.vx = (Math.random()-0.5)*10;
+            this.vy = (Math.random()-0.5)*10;
+
+            this.alpha = Math.random()*.5+.5;
+
+            this.color;
+        }
+
+        Particle.prototype = {
+            gravity: 0.05,
+            move: function () {
+                this.x += this.vx;
+                this.vy += this.gravity;
+                this.y += this.vy;
+                this.alpha -= 0.01;
+                if (this.x <= -this.w || this.x >= screen.width ||
+                    this.y >= screen.height ||
+                    this.alpha <= 0) {
+                        return false;
+                }
+                return true;
+            },
+            draw: function (c) {
+                c.save();
+                c.beginPath();
+
+                c.translate(this.x+this.w/2, this.y+this.h/2);
+                c.arc(0, 0, this.w, 0, Math.PI*2);
+                c.fillStyle = this.color;
+                c.globalAlpha = this.alpha;
+
+                c.closePath();
+                c.fill();
+                c.restore();
+            }
+        }
+    </script>
+    <div>
+
+        <div class="greeting">
+            <div>
+                <p class="heading" style="width:100vw; overflow:hidden;">MY LOVE WAS BORN TODAY <br>🥳🥳🥳</p>
+                <p class="heading">Честит Рожден Ден, бебчо!</p>
+                <br>
+                <p class="content">Пожелавам ти много здраве, щастие, успехи и много, много любов!</p>
+                <p class="content">Преодолявай трудностите с лекота и смелост и знай, че винаги те подкрепям и споделям радостта ти!</p>
+                <p class="content">Не сваляй усмивката от лицето си (и още по-малко около мен), защото тя краси света!</p>
+                <p class="content" style="width: 100vw; overflow:hidden; text-align:start;">&nbsp&nbsp&nbsp&nbspСУПЕР&nbsp;МЕГА&nbsp;ГИГА&nbsp;УЛТРА&nbsp;ХИПЕР&nbsp;АЛФА&nbsp;МЕТА&nbsp;МУЛТИ&nbsp;СТРАШНО</p>
+                <p class="content">...МНОГО ТЕ ОБИЧАМ! 🥰🥰🥰</p>
+            </div>
+        </div>
+        <canvas id="canvas">
+
+        </canvas>
     </div>
 </body>
 </html>
